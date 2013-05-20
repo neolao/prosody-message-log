@@ -1,5 +1,5 @@
 -- Prosody IM
--- Copyright (C) 2013-2013 neolao
+-- Copyright (C) 2013 neolao
 --
 
 local jid_bare = require "util.jid".bare;
@@ -36,9 +36,6 @@ local function incoming_message(event)
     if not body then return; end
     body = body:get_text();
 
-    --module:log("info", "-- Account %s", to);
-    --module:log("info", "From %s: %s", from, body);
-
     -- Get the file path
     -- Create the directory if necessary
     local directory_path = log_base_path.."/"..fsencode(to);
@@ -46,7 +43,6 @@ local function incoming_message(event)
         mkdir(directory_path);
     end
     local file_date = os.date("%Y-%m-%d");
-    --local file_path = directory_path.."/"..file_date.."_"..fsencode(from)..".txt";
     local file_path = directory_path.."/"..file_date.."_"..from..".txt";
 
     -- Append the message to the log file
@@ -77,9 +73,6 @@ local function outgoing_message(event)
     if not body then return; end
     body = body:get_text();
 
-    --module:log("info", "-- Account %s", from);
-    --module:log("info", "To %s: %s", to, body);
-
     -- Get the file path
     -- Create the directory if necessary
     local directory_path = log_base_path.."/"..fsencode(from);
@@ -87,7 +80,6 @@ local function outgoing_message(event)
         mkdir(directory_path);
     end
     local file_date = os.date("%Y-%m-%d");
-    --local file_path = directory_path.."/"..file_date.."_"..fsencode(to)..".txt";
     local file_path = directory_path.."/"..file_date.."_"..to..".txt";
 
     -- Append the message to the log file
@@ -103,10 +95,9 @@ local function outgoing_message(event)
     os.execute("chmod 755 "..file_path);
 end
 
-
+-- Register the handlers
 module:hook("message/bare", incoming_message, 1);
 module:hook("message/full", incoming_message, 1);
-
 module:hook("pre-message/bare", outgoing_message, 1);
 module:hook("pre-message/full", outgoing_message, 1);
 module:hook("pre-message/host", outgoing_message, 1);
